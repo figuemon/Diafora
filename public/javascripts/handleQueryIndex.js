@@ -16,7 +16,7 @@ tree.setLog(function(logContent) {
 	}
 );*/
 
-const loadingUrl = 'http://localhost:3000/';
+const loadingUrl = 'host';
 
 function onSalir() {
     //alert("salir")

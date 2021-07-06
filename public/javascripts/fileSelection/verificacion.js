@@ -1,5 +1,5 @@
-const visualizationUrl = 'http://localhost:3000/indented';
-const downloadUrl = 'http://localhost:3000/download';
+const visualizationUrl = 'indented';
+const downloadUrl = host + '/download';
 
 function onDownload() {
     window.location.replace(downloadUrl);
