@@ -45,34 +45,34 @@ document.getElementById('table_taxon_id').innerHTML =
     '</th><th>' +
     tree2.accesDate +
     '</th></tr>' +
-    (treeTax.totalKingdom != null
-        ? '<tr> <th>Kingdom</th><th>' +
-          'Buscar' +
-          '</th><th>' +
-          'Buscar' +
-          '</th> </tr>'
-        : '') +
-    (treeTax.totalPhylum != null
-        ? '<tr> <th>Phylum</th><th>' +
-          'Buscar' +
-          '</th><th>' +
-          'Buscar' +
-          '</th> </tr>'
-        : '') +
-    (treeTax.totalClass != null
-        ? '<tr> <th>Class</th><th>' +
-          formatNumber(treeTax.totalClass) +
-          '</th><th>' +
-          formatNumber(treeTax2.totalClass) +
-          '</th> </tr>'
-        : '') +
-    (treeTax.totalFamily != null
-        ? '<tr> <th>Family</th><th>' +
-          formatNumber(treeTax.totalFamily) +
-          '</th><th>' +
-          formatNumber(treeTax2.totalFamily) +
-          '</th> </tr>'
-        : '') +
+    (treeTax.totalKingdom != null ?
+        '<tr> <th>Kingdom</th><th>' +
+        'Buscar' +
+        '</th><th>' +
+        'Buscar' +
+        '</th> </tr>' :
+        '') +
+    (treeTax.totalPhylum != null ?
+        '<tr> <th>Phylum</th><th>' +
+        'Buscar' +
+        '</th><th>' +
+        'Buscar' +
+        '</th> </tr>' :
+        '') +
+    (treeTax.totalClass != null ?
+        '<tr> <th>Class</th><th>' +
+        formatNumber(treeTax.totalClass) +
+        '</th><th>' +
+        formatNumber(treeTax2.totalClass) +
+        '</th> </tr>' :
+        '') +
+    (treeTax.totalFamily != null ?
+        '<tr> <th>Family</th><th>' +
+        formatNumber(treeTax.totalFamily) +
+        '</th><th>' +
+        formatNumber(treeTax2.totalFamily) +
+        '</th> </tr>' :
+        '') +
     ('<tr> <th>Genus</th><th>' +
         formatNumber(treeTax.totalGenus) +
         '</th><th>' +
@@ -95,6 +95,7 @@ var totalChanges =
     treeTax.totalMoves +
     treeTax.totalRenames +
     treeTax.totalInsertions +
+    treeTax.totalAuthorChanges +
     treeTax.totalRemoves;
 var totalChanges2 =
     treeTax2.totalSplits +
@@ -102,6 +103,7 @@ var totalChanges2 =
     treeTax2.totalMoves +
     treeTax2.totalRenames +
     treeTax2.totalInsertions +
+    treeTax2.totalAuthorChanges +
     treeTax2.totalRemoves;
 
 document.getElementById('table_rank_id').innerHTML =
@@ -159,6 +161,11 @@ document.getElementById('table_rank_id').innerHTML =
     '</th><th>' +
     formatNumber(treeTax2.totalRemoves) +
     '</th></tr>' +
+    '<tr><th>Author Changes</th><th>' +
+    formatNumber(treeTax.totalAuthorChanges) +
+    '</th><th>' +
+    formatNumber(treeTax2.totalAuthorChanges) +
+    '</th></tr>' +
     '<tr><th>Taxa changed</th><th>' +
     formatNumber(totalChanges) +
     '</th><th>' +
@@ -214,6 +221,7 @@ var initOptions = {
     'move-color': '#09D3D3', //color of move nodes used in lines and text
     'equal-color': '#e8e8e8', //color of congruence nodes used in lines and text
     'focus-color': '#50500020', //color of text when a node is clicked
+    'author-color': '#ff66ff', // color of  author changed nodes
     atractionForce: 0.01, // force by pixel distance causes movement of nodes
     bundle_radius: 60, //radius in pixel to create bundles
     dirtyNodes: false, //flag marked when a node is moved in the children array of its parent
@@ -441,8 +449,7 @@ function draw() {
         fill(initOptions['focus-color']);
         stroke(initOptions['focus-color']);
         strokeWeight(1);
-        rect(
-            -10,
+        rect(-10,
             focusNode.y + (initOptions.defaultSize * (1 - pc)) / 2,
             getWindowWidth() + 10,
             initOptions.defaultSize * 0.4
@@ -568,8 +575,8 @@ function getNodeSize(node, options) {
 
     if (node.desendece && options.use_log_scale && options.use_resume_bars)
         extra =
-            (Math.log(node.desendece) / Math.log(options.log_scale)) *
-            options.log_increment;
+        (Math.log(node.desendece) / Math.log(options.log_scale)) *
+        options.log_increment;
     else if (node.desendece && options.use_resume_bars)
         extra = options.defaultBarSize;
     //console.log({options,extra});
@@ -862,6 +869,9 @@ function drawOnlyText(
         fill(options['remove-color']);
     } else if (interface_variables.added && node.added) {
         fill(options['add-color']);
+    } else if (interface_variables.authorChanged && node.authorChanged) {
+        debugger
+        fill(options['author-color'])
     } else {
         fill(options['text-color']);
     }
@@ -958,9 +968,9 @@ function drawOnlyText(
                     '</th><th>' +
                     (node.equivalent[0].a != null ? node.equivalent[0].a : '') +
                     ' - ' +
-                    (node.equivalent[0].da != null
-                        ? node.equivalent[0].da
-                        : '') +
+                    (node.equivalent[0].da != null ?
+                        node.equivalent[0].da :
+                        '') +
                     '</th></tr>' +
                     '<tr><th>        </th><th>' +
                     node.ad +

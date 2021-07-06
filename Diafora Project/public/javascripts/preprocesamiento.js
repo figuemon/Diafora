@@ -67,7 +67,7 @@ async function verificar_name_changes(left_nodes, rigth_nodes) {
                     if (
                         node.f.length > 0 &&
                         equivalent.f[equivalent.f.length - 1].n !=
-                            node.f[node.f.length - 1].n
+                        node.f[node.f.length - 1].n
                     ) {
                         node.moved = true;
                         equivalent.moved = true;
@@ -94,7 +94,7 @@ async function verificar_name_changes(left_nodes, rigth_nodes) {
                     if (
                         node.f.length > 0 &&
                         equivalent.f[equivalent.f.length - 1].n !=
-                            node.f[node.f.length - 1].n
+                        node.f[node.f.length - 1].n
                     ) {
                         node.moved = true;
                         equivalent.moved = true;
@@ -216,8 +216,15 @@ function name_changes_right(node_list) {
             let same_author = compare_author(node.a, eq_node.a);
 
             //check for  rename ----------------------------------------------------------------------------------
-            if (node.n == eq_node.n && same_author) {
+            if (node.n == eq_node.n) {
                 node.rename = false;
+                if (!same_author) {
+                    debugger;
+                    node.authorChanged = true;
+                    node.f.forEach((fam) => {
+                        fam.totalAuthorChanges++;
+                    })
+                }
             } else {
                 //console.log(node.a,eq_node);
                 node.rename = true;
@@ -251,12 +258,13 @@ function compare_author(first_author, second_author) {
         return false;
     } else {
         for (
-            let author_slot = 0;
-            author_slot < first_author.length;
-            author_slot++
+            let author_slot = 0; author_slot < first_author.length; author_slot++
         ) {
-            if (first_author[author_slot] != second_author[author_slot]) {
-                //console.log({first_author,second_author});
+            const firstA = first_author[author_slot]; // normalizeAuthorData(first_author[author_slot]);
+            const secondA = second_author[author_slot]; //normalizeAuthorData(second_author[author_slot]);
+            //if (!firstA.includes(secondA) || stringSimilarity.compareTwoStrings(firstA, secondA) < 0.6) {
+            if (firstA !== secondA) {
+                // console.log({ firstA, secondA });
                 return false;
             }
         }
@@ -267,28 +275,26 @@ function compare_author(first_author, second_author) {
 //compares author date of two nodes
 function compare_author_date(first_author, second_author) {
     if (
-        first_author.a.length != second_author.a.length ||
-        first_author.ad.length != second_author.ad.length
+        first_author.a.length != second_author.a.length || // Same amount of authors
+        first_author.ad.length != second_author.ad.length // Same date length
     ) {
         return false;
     } else {
         for (
-            let author_slot = 0;
-            author_slot < first_author.a.length;
-            author_slot++
+            let author_slot = 0; author_slot < first_author.a.length; author_slot++
         ) {
-            if (first_author.a[author_slot] != second_author.a[author_slot]) {
-                //console.log({first_author,second_author});
+            const firstA = first_author.a[author_slot]; //normalizeAuthorData(first_author.a[author_slot]);
+            const secondA = second_author.a[author_slot]; //normalizeAuthorData(second_author.a[author_slot]);
+            //if (!firstA.includes(secondA) || stringSimilarity.compareTwoStrings(firstA, secondA) < 0.6) {
+            if (firstA !== secondA && first_author.n !== second_author.n) {
+                //     ////console.log({ firstA, secondA });
                 return false;
             }
         }
         for (
-            let author_slot = 0;
-            author_slot < first_author.ad.length;
-            author_slot++
+            let author_slot = 0; author_slot < first_author.ad.length; author_slot++
         ) {
             if (first_author.ad[author_slot] != second_author.ad[author_slot]) {
-                //console.log({first_author,second_author});
                 return false;
             }
         }

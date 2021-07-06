@@ -11,6 +11,7 @@ var interface_variables = {
     merge: false,
     split: false,
     rename: false,
+    authorChanged: false,
     move: false,
     bundling: 0.5,
     changedLines: false,
@@ -60,10 +61,12 @@ function onCongruenceChange() {
     interface_variables.congruence = !interface_variables.congruence;
     interface_variables.changedLines = true;
 }
+
 function onMergeChange() {
     interface_variables.merge = !interface_variables.merge;
     interface_variables.changedLines = true;
 }
+
 function onSplitChange() {
     interface_variables.split = !interface_variables.split;
     interface_variables.changedLines = true;
@@ -77,6 +80,10 @@ function onRenameChange() {
 function onMoveChange() {
     interface_variables.move = !interface_variables.move;
     interface_variables.changedLines = true;
+}
+
+function onAuthorChange() {
+    interface_variables.authorChanged = !interface_variables.authorChanged;
 }
 
 function onSliderChange(value) {
